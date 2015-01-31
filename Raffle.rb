@@ -20,16 +20,21 @@ class Raffle
 	def start()
 		@users = []
 		@running = true
+		@messager.message("Raffle started. Type !raffle into chat to enter.")
 	end
 
 	def end
 		@running = false
-		@messager.message("User " + @users.sample + " wins the raffle.")
+		if @users.length > 0
+			@messager.message("User " + @users.sample + " wins the raffle.")
+		else
+			@messager.message("No user entered the raffle.")
+		end
+
 	end
 
 	def add(user)
 		@users << user if @running and !(@users.include?(user))
-		p @users
 	end
 
 	def self.addPlugin()
