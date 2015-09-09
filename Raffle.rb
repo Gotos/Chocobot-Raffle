@@ -17,16 +17,21 @@ class Raffle
 		@running = false
 	end
 
-	def start()
+	def start(data)
+		@count = data.length < 1 ? 1 : data[0].to_i
 		@users = []
 		@running = true
-		@messager.message("Raffle started. Type !raffle into chat to enter.")
+		@messager.message("Raffle started. Type !raffle into chat to enter. Up to " + @count.to_s + " people will win!")
 	end
 
 	def end
 		@running = false
 		if @users.length > 0
-			@messager.message("User " + @users.sample + " wins the raffle.")
+			winners = []
+			#for i in 0...[@users.length,@count].min
+				winners = @users.sample([@users.length,@count].min)
+			#end
+			@messager.message("User(s) " + winners.join(", ") + " win the raffle.")
 		else
 			@messager.message("No user entered the raffle.")
 		end
@@ -41,7 +46,7 @@ class Raffle
 		PluginLoader.addCommand(Command.new("!startraffle", lambda do |data, priv, user|
 
 			if priv <= 10
-				getInstance.start
+				getInstance.start(data)
 			end
 		end))
 		PluginLoader.addCommand(Command.new("!endraffle", lambda do |data, priv, user|
